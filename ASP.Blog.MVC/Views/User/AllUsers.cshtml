@@ -1,0 +1,52 @@
+﻿@model List<ASP.Blog.MVC.ViewModels.UserViewModel>
+
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@using ASP.Blog.MVC.ViewModels;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+
+
+@{
+    ViewData["Title"] = "Пользователи";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+@*<h2></h2>*@
+
+<div>    
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h4>Пользователи</h4>
+        @foreach(var user in Model)
+        {
+            <div class="article-block">
+                @foreach (var role in user.UserRoles)
+                {
+                    <label class="badge bg-info"> ✔ @role.Name</label>
+                }
+                <div>
+                    <span>ФИО: @user.First_Name @user.Middle_Name @user.Last_Name</span>
+                    <span> Email: @user.Email</span>
+                </div>
+                <div class="vert-spacing">
+                    <a class="btn-submit" method="get" asp-action="Update" asp-route-userId="@user.Id">Редактировать</a>
+                    @if (User.Identity.Name != user.Login)
+                    {
+                        <form class="inline" method="post" asp-controller="User" asp-action="Delete" asp-route-userId=@user.Id>
+                            <input class="background-main btn-delete" type="submit" value="Удалить" />
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+        <div>
+            <form method="get" asp-controller="User" asp-action="AddUser">
+                <input class="enter-submit" type="submit" value="Добавить" disabled />
+            </form>
+        </div>
+    }
+</div>

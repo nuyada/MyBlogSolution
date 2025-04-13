@@ -1,0 +1,39 @@
+﻿@model ASP.Blog.MVC.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h3 class="center">Добро пожаловать!</h3>
+<div class="block-reg background-main tag-block">
+    <form class="frm" method="post" asp-action="Login" asp-controller="User">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <div class="mrgn">
+                <label asp-for="Email"></label><br />
+                <input asp-for="Email" />
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+        </div>
+        <div>
+            <div class="mrgn">
+                <label asp-for="Password"></label><br />
+                <input asp-for="Password" />
+                <span class="text-danger" asp-validation-for="Password"></span>
+            </div>
+        </div>
+        <div>
+            <input class="enter-submit" type="submit" value="Войти" />
+        </div>
+    </form>
+    <div>
+        <span>Ещё нет аккаунта? </span>
+        <a method="get" asp-action="Register" asp-controller="User">Зарегистрируйтесь</a>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

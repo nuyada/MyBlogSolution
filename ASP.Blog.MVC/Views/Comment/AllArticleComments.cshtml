@@ -1,0 +1,44 @@
+﻿@model List<ASP.Blog.MVC.ViewModels.Comment.CommentViewModel>
+@inject UserManager<User> UserManager;
+@using ASP.Blog.MVC.DAL.Entities
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@{
+    ViewData["Title"] = "Все комментарии";
+}
+
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<div>
+    @foreach(var comment in Model)
+    {
+        <div class="article-block">
+            <hr>
+            <span>@comment.CommentDate.ToShortDateString() @comment.CommentDate.ToShortTimeString()</span>
+            @*<span>@comment.User.First_Name @comment.User.Last_Name</span>*@
+            <textarea class="textarea" placeholder="Комментарий" disabled>@comment.Comment</textarea>
+            @{
+                var isAdmin = User.IsInRole("Admin");
+                var currentUserId = UserManager.GetUserId(User);
+            }
+
+            @if (isAdmin || comment.UserId == currentUserId)
+            {
+                <a class="btn-submit" asp-controller="Comment" asp-action="Update" asp-route-id="@comment.Id">Редактировать</a>
+            }
+            @if (isAdmin || comment.UserId == currentUserId)
+            {
+
+                <form method="post" asp-controller="Comment" asp-action="Delete" asp-route-id=@comment.Id>
+                    <input class="btn-submit btn-delete" type="submit" value="Удалить" />
+            </form>}
+        </div>
+    }
+    <div>
+        <hr>
+@*        <form method="get" asp-controller="Comment" asp-action="AddComment" >
+            <input type="submit" value="Добавить" />
+        </form>
+*@    </div>
+</div>

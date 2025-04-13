@@ -1,0 +1,90 @@
+﻿@model List<ASP.Blog.MVC.ViewModels.Article.ArticleViewModel>
+
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+
+
+@{
+    @if (SignInManager.IsSignedIn(User))
+    {
+        ViewData["Title"] = "Cтатьи пользователя";
+    }
+    else
+    {
+        ViewData["Title"] = "Все cтатьи";
+    }
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<div>    
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h4 class="vert-spacing">Все статьи</h4>
+        <div class="vert-spacing">
+            <a class="enter-submit" method="get" asp-controller="Article" asp-action="AddArticle">Написать новую статью</a>
+        </div>
+        @foreach (var article in Model)
+        {
+            <div class="article-block">
+                @if (article.Tags != null && article.Tags.Any())
+                {
+                    foreach (var tag in article.Tags)
+                    {
+                        <label class="badge badge-primary">✔ @tag.Tag_Name</label>
+                    }
+                }
+                else
+                {
+                    <p class="text-warning">Нет тегов у этой статьи</p>
+                }
+
+                <div>
+                    <a method="get" asp-action="ViewArticle" asp-route-id=@article.Id><h5>@article.Title</h5></a>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn-submit" asp-controller="Comment" asp-action="AddComment" asp-route-articleId="@article.Id">Оставить комментарий</a>
+                    }
+                </div>
+                @if (ViewContext.RouteData.Values["action"]?.ToString() == "AllUserArticles")
+                {
+                    <a class="btn-submit" method="get" asp-action="Update" asp-route-id="@article.Id">Редактировать</a>
+                }
+
+                @{
+                    var isOnUserArticlesPage = ViewContext.RouteData.Values["action"]?.ToString() == "AllUserArticles";
+                    var isAdmin = User.IsInRole("Admin");
+                }
+
+                @if (isOnUserArticlesPage || isAdmin)
+                {
+                    <form class="inline" method="post" asp-controller="Article" asp-action="Delete" asp-route-Id="@article.Id">
+                        <input class="background-main btn-delete" type="submit" value="Удалить" />
+                    </form>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <h4 class="vert-spacing">Все статьи</h4>
+        @foreach(var article in Model)
+        {
+            <div class="article-block">
+                @foreach (var tag in article.Tags)
+                {
+                    <label class="badge badge-primary"> ✔ @tag.Tag_Name</label>
+                }
+                <div>
+                    <a method="get" asp-action="ViewArticle" asp-route-id=@article.Id><h5>@article.Title</h5></a>
+                </div>
+            </div>
+        }
+    }
+</div>
+

@@ -1,0 +1,32 @@
+﻿@model ASP.Blog.MVC.ViewModels.Comment.CommentViewModel
+
+@using ASP.Blog.MVC.Data.Entities;
+
+@{
+    ViewData["Title"] = "Добавление комментария";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h2>Добавление комментария</h2>
+<div class="article-block">
+    @*<span>Автор @Model.User.First_Name @Model.User.Last_Name</span>*@
+    <form method="post" asp-controller="Comment" asp-action="AddComment">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input asp-for="UserId" hidden/>
+        <input asp-for="ArticleId" hidden />
+        <input asp-for="Id" hidden />
+        <input asp-for="CommentDate" hidden>
+        <textarea class="textarea" placeholder="Комментарий" asp-for="Comment"></textarea>
+        <span asp-validation-for="Comment"></span>
+        <div>
+            <input class="btn-submit" type="submit" value="Добавить" />
+        </div>
+    </form>
+    <a class="enter-submit" method="get" asp-controller="Article" asp-action="ViewArticle" asp-route-Id=@Model.ArticleId>Вернуться с статье</a>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

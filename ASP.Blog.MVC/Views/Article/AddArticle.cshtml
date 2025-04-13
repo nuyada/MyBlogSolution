@@ -1,0 +1,71 @@
+﻿@model ASP.Blog.MVC.ViewModels.Article.ArticleViewModel
+
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+
+
+@{
+    ViewData["Title"] = "Добавление статьи";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h2 class="vert-spacing">Добавление статьи</h2>
+<div class="article-block">    
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form method="post" asp-controller="Article" asp-action="AddArticle">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div asp-validation-summary="ModelOnly"></div>
+            @if (ViewBag.Tags is List<Tag> tags)
+            {
+                foreach (var tag in tags)
+                {
+                    <input type="checkbox" name="SelectedTags" value="@tag.ID" />
+                    <label>@tag.Tag_Name</label>
+                }
+            }
+            else
+            {
+                <p class="text-danger">Теги не загружены.</p>
+            }
+            @if (Model.User != null)
+            {
+                <h5 class="vert-spacing">Автор: @Model.User.First_Name @Model.User.Last_Name</h5>
+            }
+            else
+            {
+                <p class="text-danger">Автор не указан</p>
+            }
+            <div class="mrgn">
+                <div>Заголовок</div>
+                <input placeholder="Заголовок" asp-for="Title" />
+                <span asp-validation-for="Title"></span>
+            </div>
+            <div class="txt-size">
+                <div>Текст статьи</div>
+                <textarea class="textarea" placeholder="Текст статьи" asp-for="Content" ></textarea>
+                <span asp-validation-for="Content"></span>
+            </div>
+            <div>
+                <input class="btn-submit" type="submit" value="Добавить"/>
+            </div>
+        </form>
+        <div>
+            <a class="enter-submit" method="get" asp-action="AllArticles" asp-controller="Article">Вернуться к списку всех статей</a>
+        </div>
+    }
+    else
+    {
+        <h4>Статью может написать авторизованный пользователь.</h4>
+        <h6>Войдите или зарегистрируйтесь.</h6>
+    }
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

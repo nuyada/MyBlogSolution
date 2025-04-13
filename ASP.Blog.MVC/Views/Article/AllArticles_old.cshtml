@@ -1,0 +1,72 @@
+﻿@model List<ASP.Blog.MVC.ViewModels.Article.ArticleViewModel>
+
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+
+
+@{
+    @if (SignInManager.IsSignedIn(User))
+    {
+        ViewData["Title"] = "Cтатьи пользователя";
+    }
+    else
+    {
+        ViewData["Title"] = "Все cтатьи";
+    }
+}
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+@*<h2></h2>*@
+
+<div>    
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h4>Мои статьи</h4>
+        @foreach(var article in Model)
+        {
+            <div class="article-block">
+                <hr>
+                @foreach (var tag in article.Tags)
+                {
+                    <label class="badge badge-primary"> ✔ @tag.Tag_Name</label>
+                }
+                <div class="mrgn">
+                    <div>Заголовок</div>
+                    <input placeholder="Заголовок" asp-for=@article.Title />
+                </div>
+                <div class="txt-size">
+                    <div>Текст статьи</div>
+                    <textarea class="textarea" placeholder="Текст статьи">@article.Content</textarea>
+                </div>
+                <a method="get" asp-action="AddComment" asp-controller="Comment" asp-route-articleId=@article.Id>Добавить комментарий</a>
+                <a method="get" asp-action="AllArticleComments" asp-controller="Comment" asp-route-articleId=@article.Id>Комментарии</a>
+                <a method="get" asp-action="Update" asp-route-id="@article.Id">Редактировать</a>
+                <form method="post" asp-controller="Article" asp-action="Delete" asp-route-Id=@article.Id>
+                    <input class="enter_submit" type="submit" value="Удалить" />
+                </form>
+            </div>
+        }
+        <div>
+            <hr>
+            <form method="get" asp-controller="Article" asp-action="AddArticle">
+                <input type="submit" value="Написать новую статью"/>
+            </form>
+            <hr>
+        </div>
+    }
+    else
+    {
+        <h4>Эти статьи может увидеть любой пользователь.</h4>
+        @foreach(var article in Model)
+        {
+            <div class="article-block">
+                <hr>
+                <textarea class="textarea" placeholder="Текст статьи">@article.Content</textarea>        
+            </div>
+        }
+    }
+</div>

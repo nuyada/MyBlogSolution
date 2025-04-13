@@ -1,0 +1,176 @@
+﻿@model ASP.Blog.MVC.ViewModels.UserViewModel
+
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> UserManager;
+
+@{
+    ViewData["Title"] = "EditUser";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h2>Обновление пользовательских данных</h2>
+<div class="tag-block">
+    @{
+        var isAdmin = User.IsInRole("Admin");
+        var isUserOnly = Model.CheckedRolesDic.Any(r => r.Key.Name == "User" && r.Value) &&
+        !Model.CheckedRolesDic.Any(r => r.Key.Name == "Admin" && r.Value);
+    }
+    @if (isUserOnly)
+    {
+        <form method="post" asp-controller="User" asp-action="Delete" asp-route-userId="@Model.Id">
+            <input type="submit" value="Удалить аккаунт" class="btn-submit btn-delete" />
+        </form>
+    }
+    <form method="post" asp-action="Update" asp-controller="User">
+        <div asp-validation-summary="ModelOnly"></div>
+        @{
+            var isAdmin = User.IsInRole("Admin");
+        }
+        @foreach (var role in Model.CheckedRolesDic)
+        {
+            var isChecked = role.Value ? "checked" : "";
+
+            if (isAdmin)
+            {
+                <input type="checkbox" name="SelectedRoles" value="@role.Key.Id" @isChecked />
+            }
+            else
+            {
+                <input type="checkbox" value="@role.Key.Id" @isChecked disabled />
+            }
+            <label class="badge bg-info">@role.Key.Name</label>
+        }
+        <div class="frm_text mrgn">
+            <input class="frm_text" asp-for="Id" type="text" value="@Model.Id" hidden />            
+            <input class="frm_text" asp-for="Login" type="text" value="@Model.Login" hidden />
+        </div>
+        <div class="mrgn">
+            <label asp-for="Last_Name"></label><br />
+            <input asp-for="Last_Name" />
+            <span asp-validation-for="Last_Name"></span>
+        </div>
+        <div class="mrgn">
+            <label asp-for="First_Name"></label><br />
+            <input asp-for="First_Name" />
+            <span asp-validation-for="First_Name"></span>
+        </div>
+        <div class="frm mrgn">
+            <label asp-for="Middle_Name"></label><br />
+            <input class="frm_text" asp-for="Middle_Name" type="text" value="@Model.Middle_Name" />
+            <span asp-validation-for="Middle_Name"></span>
+        </div>
+        <div class="mrgn">
+            <label asp-for="Email"></label><br />
+            <input asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="mrgn">День рождения</div>
+        <div class="mrgn" id="birthday" onload="">
+            <select asp-for="Day" class="form-control date-control" ID="day">
+                <option value="">@Model.Day</option>
+            </select>
+            <span asp-validation-for="Day" class="text-danger"></span>
+
+            <select asp-for="Month" class="form-control date-control" 
+                    onchange="CorrectDay()" ID="month">
+                <option value="">@Model.Month</option>
+            </select>
+            <span asp-validation-for="Month" class="text-danger"></span>
+
+            <select asp-for="Year" class="form-control date-control" ID="year"                    
+                    onchange="CorrectDay()">
+                <option value="">@Model.Year</option>
+            </select>
+            <span asp-validation-for="Year" class="text-danger"></span>
+        </div>
+
+        <div class="center">
+            <input class="enter-submit" type="submit" value="Обновить"/>
+        </div>
+       
+    </form>    
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", 
+            function () { FillData(@Model.Year, @Model.Month, @Model.Day) });
+
+        function FillData(y, m, d) {
+            FillDays();
+            FillMonths();
+            FillYears();
+            SetCurrentDay(y, m, d);
+        }
+        function FillDays() {
+            var day = document.getElementById("day");
+            day.options.length = 0;
+            for (var i = 1; i <= 31; i++) {
+                AddOption(day, i, i);
+            }
+        }
+        function FillMonths() {
+            var month = document.getElementById("month");
+            month.options.length = 0;
+            AddOption(month, 1, "Январь");
+            AddOption(month, 2, "Февраль");
+            AddOption(month, 3, "Март");
+            AddOption(month, 4, "Апрель");
+            AddOption(month, 5, "Май");
+            AddOption(month, 6, "Июнь");
+            AddOption(month, 7, "Июль");
+            AddOption(month, 8, "Август");
+            AddOption(month, 9, "Сентябрь");
+            AddOption(month, 10, "Октябрь");
+            AddOption(month, 11, "Ноябрь");
+            AddOption(month, 12, "Декабрь");
+        }
+        function FillYears() {
+            var year = document.getElementById("year");
+            year.options.length = 0;
+            var currentDate = new Date();
+            for (var i = 0; i < 100; i++) {
+                AddOption(year, currentDate.getFullYear() - i, currentDate.getFullYear() - i)
+            }
+        }
+        function SetCurrentDay(y, m, d) {
+            var currentDate = new Date();
+            var month = document.getElementById("month");
+            var year = document.getElementById("year");
+            var day = document.getElementById("day");
+
+            year.value = y;
+            month.value = m;
+            CorrectDay();
+            day.value = d;
+        }
+        function CorrectDay() {
+            var month = document.getElementById("month");
+            var year = document.getElementById("year");
+            var day = document.getElementById("day");
+            
+            var selectedDay = day.value;
+            
+            if (month.value != 0 && year.value != 0) {
+                var dayCount = 32 - new Date(year.value, month.value - 1, 32).getDate();
+                day.options.length = 0;
+                for (var i = 1; i <= dayCount; i++) {
+                    AddOption(day, i, i);
+                }
+            }
+        }
+        function AddOption(ddl, value, text) {
+            var opt = document.createElement("option");
+            opt.text = text;
+            opt.value = value;
+            ddl.add(opt);
+        }
+
+    </script>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

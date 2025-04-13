@@ -1,0 +1,59 @@
+﻿@model ASP.Blog.MVC.ViewModels.Article.ArticleViewModel
+
+@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+
+
+@{
+    ViewData["Title"] = "Статья";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<div class="article-block">    
+    <div class="mrgn">
+        <h5>@Model.Title</h5>
+    </div>
+    @foreach (var tag in Model.Tags)
+    {
+        <label class="badge badge-primary"> ✔ @tag.Tag_Name</label>
+    }
+    <span>Автор: @Model.User.First_Name @Model.User.Last_Name</span> 
+    <div class="txt-size">
+        <h4>@Model.Title</h4>
+        <textarea class="textarea" placeholder="Текст статьи" asp-for="Content" disabled>@Model.Content</textarea>
+    </div>
+    <h6>Комментарии к статье</h6>
+    @foreach (var comment in Model.Comments)
+    {
+        <div>
+            <div>
+                <span>@comment.User.Email </span>
+                <span>@comment.User.UserName</span>
+            </div>
+            <span>@comment.Comment_Text</span>
+        </div>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div>
+                <a class="btn-submit" method="get" asp-controller="Comment" asp-action="Update" asp-route-id=@comment.ID>Редактировать</a>
+                <form class="inline" method="post" asp-controller="Comment" asp-action="Delete" asp-route-id=@comment.ID>
+                    <input class="background-main btn-delete" type="submit" value="Удалить" />
+                </form>
+            </div>
+        }
+    }
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="vert-spacing">
+            <a class="enter-submit" method="get" asp-action="AddComment" asp-controller="Comment" asp-route-articleId=@Model.Id>Оставить комментарий</a>
+        </div>
+    }
+    <div class="vert-spacing">
+        <a class="enter-submit" method="get" asp-action="AllArticles" asp-controller="Article">Вернуться к списку всех статей</a>
+    </div>
+</div>

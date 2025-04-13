@@ -1,0 +1,43 @@
+﻿@model List<ASP.Blog.MVC.ViewModels.Role.RoleViewModel>
+
+@using ASP.Blog.MVC.DAL.Entities
+@using ASP.Blog.MVC.Data.Entities; @*????????*@
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+
+@{
+    ViewData["Title"] = "Все роли";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<div>
+    <div>
+        <a class="enter-submit" method="get" asp-controller="Role" asp-action="AddRole">Добавить</a>
+    </div>
+    @if (SignInManager.IsSignedIn(User) &&  User.IsInRole("Admin") )
+    {
+        @foreach (var role in Model)
+        {
+            <div class="tag-block">
+                <div class="mrgn">Название</div>
+                <div>
+                    <h5>@role.Name</h5>
+                </div>
+                <div class="mrgn">Описание</div>
+                <textarea class="textarea" placeholder="Описание" disabled>@role.Description</textarea>
+                <a class="btn-submit" method="get" asp-controller="Role" asp-action="Update" asp-route-roleId=@role.ID>Редактировать</a>
+                <form class="inline" method="post" asp-controller="Role" asp-action="Delete" asp-route-roleId=@role.ID>
+                    @if(role.Name == "Admin")
+                    {
+                        <input class="background-main btn-delete" type="submit" value="Удалить" disabled />
+                    }
+                    else
+                    {
+                        <input class="background-main btn-delete" type="submit" value="Удалить" />
+                    }
+                </form>
+            </div>
+        }
+    }
+</div>

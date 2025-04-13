@@ -1,0 +1,48 @@
+﻿@model ASP.Blog.MVC.ViewModels.UserEditViewModel
+
+@{
+    ViewData["Title"] = "EditUser";
+}
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h2>Обновление пользовательских данных</h2>
+<div class="tag-block">
+    <form method="post" asp-action="Update" asp-controller="User">
+        <div class="frm_text mrgn">
+            <input class="frm_text" asp-for=" UserId" type="text" value="@Model.UserId" />
+            <span asp-validation-for="UserId" class="text-danger"></span>
+        </div>
+        <div class="mrgn">
+            <label asp-for="Last_Name"></label><br />
+            <input asp-for="Last_Name" />
+            <span asp-validation-for="Last_Name"></span>
+        </div>
+        <div class="mrgn">
+            <label asp-for="First_Name"></label><br />
+            <input asp-for="First_Name" />
+            <span asp-validation-for="First_Name"></span>
+        </div>
+        <div class="frm mrgn">
+            <input class="frm_text" asp-for="Middle_Name" type="text" value="@Model.Middle_Name" />
+            <span asp-validation-for="Middle_Name" class="text-danger"></span>
+        </div>
+        <div class="mrgn">
+            <label asp-for="Email"></label><br />
+            <input asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="mrgn">День рождения</div>
+        <div class="mrgn">
+            <input asp-for="BirthDate" type="date" value="@Model.BirthDate" />
+            <span asp-validation-for="BirthDate" class="text-danger"></span>
+        </div>
+        <div class="center">
+            <input class="enter-submit" type="submit" value="Обновить"/>
+        </div>
+    </form>    
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+</div>

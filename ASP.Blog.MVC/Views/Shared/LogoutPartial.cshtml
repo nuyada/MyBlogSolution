@@ -1,0 +1,10 @@
+﻿@using ASP.Blog.MVC.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+<div>
+    @if(SignInManager.IsSignedIn(User))
+    {
+        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Выход</a>
+    }
+</div>

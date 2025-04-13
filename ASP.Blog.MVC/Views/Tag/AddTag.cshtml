@@ -1,0 +1,28 @@
+﻿@model ASP.Blog.MVC.ViewModels.Tag.TagViewModel
+
+@using ASP.Blog.MVC.Data.Entities;
+
+@{
+    ViewData["Title"] = "Добавление тега";
+}
+<link rel="stylesheet" href="~/css/main-page.css" />
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h2>Добавление тега</h2>
+<div>Название</div>
+<div class="tag-block">
+    <form class="frm" method="post" asp-controller="Tag" asp-action="AddTag">
+        <div asp-validation-summary="ModelOnly"></div>
+        <textarea class="mrgn textarea" placeholder="Тег" asp-for="Tag_Name"></textarea>
+        <span asp-validation-for="Tag_Name"></span>
+        <div>
+            <input class="btn-submit" type="submit" value="Добавить" />
+        </div>
+    </form>
+    <a class="enter-submit" method="get" asp-action="AllTags" asp-controller="Tag">Перейти к списку всех тегов</a>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,33 @@
+﻿@model ASP.Blog.MVC.ViewModels.Role.RoleViewModel
+
+@using ASP.Blog.MVC.Data.Entities;
+
+@{
+    ViewData["Title"] = "Редактирование роли";
+}
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h2>Редактирование роли</h2>
+<div class="tag-block">    
+    <form method="post" asp-controller="Role" asp-action="Update" >
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <input class="form-control" asp-for="ID" hidden />
+            <div>Название роли</div><br />
+            <input class="form-control" asp-for="Name"/>
+            <span asp-validation-for="Name"></span>
+            <label>Описание</label><br />
+            <textarea class="textarea" placeholder="Текст статьи" asp-for="Description">@Model.Description</textarea>
+            <span asp-validation-for="Description"></span>
+        </div>
+        <div>
+            <input class="btn-submit" type="submit" value="Сохранить"/>
+        </div>
+    </form>
+    <a class="enter-submit" method="get" asp-action="AllRoles" asp-controller="Role">Перейти к списку всех ролей</a>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
