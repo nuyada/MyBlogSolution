@@ -32,5 +32,6 @@ namespace ASP.Blog.MVC.DAL.Repositories
         {
             Delete(article);
         }
+
     }
 }

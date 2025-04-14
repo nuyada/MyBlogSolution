@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+.badge-primary {
+    background-color: #007bff;
+    color: black; /* теперь текст точно видно */
+}
