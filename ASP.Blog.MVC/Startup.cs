@@ -67,6 +67,7 @@ namespace ASP.Blog.MVC
                     opts.Password.RequireUppercase = false;
                 })
                 .AddEntityFrameworkStores<BlogContext>()
+
             ;
             services.AddAuthentication(options => options.DefaultScheme = "Cookies")
                 .AddCookie("Cookies", options =>
@@ -89,6 +90,8 @@ namespace ASP.Blog.MVC
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddSingleton<ILogger, Logger>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

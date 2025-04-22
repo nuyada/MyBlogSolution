@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace ASP.Blog.MVC.ViewModels.Article
 {
     public class ArticleViewModel
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Обязательно для заполнения")]
         public string Title { get; set; }
         public DateTime ArticleDate { get; set; }
+        [Required(ErrorMessage = "Обязательно для заполнения")]
         public string Content { get; set; }
         [BindNever]
         public Entity.User? User { get; set; }
